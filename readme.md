@@ -1,7 +1,7 @@
 # Codename: Velociraptor
 ---
 
-This guide aims to unify front-end development techniques to achieve:
+This guide aims to unify front-end development techniques and achieve:
 
 * Quality code
 * Best practise
@@ -16,13 +16,13 @@ Please note this is work in progress.
 
 ## Workflows
 
-Start each project by defining 'blocks', patterns and modules of interactive components from visual printouts. Note that just because a component appears to be different, the structure  could remain the same. Presentation could be determined by it's location. For instance, a CTA block should not be written twice; it can be presented differently depending on whether it appears in an aside or a feature grid. Similarly, a subscribe form could have the same behaviour as a search form, but can be presented differently. Read the [BEM methodology](http://coding.smashingmagazine.com/2012/04/16/a-new-front-end-methodology-bem/).
+Start each project by defining 'blocks', patterns and modules of components from visual printouts. Note that just because a component appears to be different, the structure  could remain the same. Presentation could be determined by it's location. For instance, a CTA block should not be written twice; it can be presented differently depending on whether it appears in an aside or a feature grid. Similarly, a subscribe form could have the same behaviour as a search form, but can be presented differently. Read the [BEM methodology](http://coding.smashingmagazine.com/2012/04/16/a-new-front-end-methodology-bem/).
 
 Look for potential development hurdles, inconsistencies or UX anti-patterns and iron them out before you start the build to avoid falling over at a later stage.
 
 **Separate structure from presentation from behavior**. Strictly keep structure (markup), presentation (styling), and behavior (scripting) apart, and try to keep the interaction between the three to an absolute minimum.
 
-Always be agnostic and consider implications of a solution in another situation (i.e. mobile, touch device, browsers without a required feature). **Progressive enhancement is key**.
+Always be agnostic and assume nothing. Consider implications of a solution in another situation (i.e. mobile, touch device, browsers without a required feature). **Progressive enhancement is key**.
 
 Components should be portable with the potential of several instances of them working in unison. While hooking on an elements `id` attribute has performance gains, try to avoid unique IDs on elements and **always opt for using `class` instead**.
 
@@ -49,9 +49,9 @@ Avoid over-specificity, and abstract things where you can.
 
 ### Semantics and accessibility
 
-Avoid '`div` soup' and always use appropriate semantic elements for the benefit of accessibility and native functionality. If in doubt, use [HTML5 doctor](http://html5doctor.com).
+Avoid '`div` soup' and always use appropriate semantic elements for the benefit of accessibility and native functionality. If in doubt, use [HTML5 doctor](http://html5doctor.com) as a reference.
 
-Your markup should be semantically constructed and coherent, even if the presentation requires something to appear separate. If you are relying on styles or scripting for content to become understandable, then it is no longer semantic, portable or accessible.
+Your markup should be semantically constructed and coherent, even if the presentation requires something to appear separate. If you are relying on styles or scripting for content to become understandable, then it is no longer portable or accessible.
 
 For example, a visual shows a tabbed UI, which could be implemented using:
 
