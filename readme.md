@@ -22,11 +22,15 @@ Look for potential development hurdles, inconsistencies or UX anti-patterns and 
 
 **Separate structure from presentation from behavior**. Strictly keep structure (markup), presentation (styling), and behavior (scripting) apart, and try to keep the interaction between the three to an absolute minimum.
 
-Always be agnostic and assume nothing. Consider implications of a solution in another situation (i.e. mobile, touch device, browsers without a required feature). **Progressive enhancement is key**.
-
 Components should be portable with the potential of several instances of them working in unison. While hooking on an elements `id` attribute has performance gains, try to avoid unique IDs on elements and **always opt for using `class` instead**.
 
 Avoid over-specificity, and abstract things where you can.
+
+Always be agnostic and assume nothing. Consider implications of a solution in another situation (i.e. mobile, touch device, browsers without a required feature). **Progressive enhancement is key**.
+
+A good idea is to always think **mobile-first**, that is, not designing for the lowest denominator but starting with the basics and adding functionality and presentation as and when you need it **dependant on the device**. This workflow and mindset will almost give you a mobile version for free.
+
+**Don't compromise current and future browsers to adhere to legacy ones**, it is short-sighted. That said, do provide a solution for them, even if it is a more basic experience.
 
 ### General Formatting
 
@@ -49,9 +53,11 @@ Avoid over-specificity, and abstract things where you can.
 
 ### Semantics and accessibility
 
+Always use live text, images with alt attributes for titles is not a solution. If a visual isn't achievable without compromising this, flag it up.
+
 Avoid '`div` soup' and always use appropriate semantic elements for the benefit of accessibility and native functionality. If in doubt, use [HTML5 doctor](http://html5doctor.com) as a reference.
 
-Your markup should be semantically constructed and coherent, even if the presentation requires something to appear separate. If you are relying on styles or scripting for content to become understandable, then it is no longer portable or accessible.
+Your markup should be semantically constructed and coherent, even if the presentation requires something to appear separated. If you are relying on styles or scripting for content to become understandable, then it is no longer portable or accessible.
 
 For example, a visual shows a tabbed UI, which could be implemented using:
 
@@ -93,7 +99,7 @@ This requires styling and scripting to make the elements appear to be linked. To
         </div>
     </div>
     
-The concept of this content being a tabbed card set is *presentational* and *behavioral* and should be treated as an enhancement. Therefore using Javascript, you can manipulate this structure on the client and style it accordingly.
+The concept of this content being a tabbed card set is *presentational* and *behavioral* and should be treated as an enhancement. Therefore using Javascript, you can manipulate this structure on the client and style it accordingly. A benefit of this is that you may not want a tabbed UI on mobile devices, so no additional work is required.
 
 `section`, `article`, `aside` are section level elements. All elements are semantically relative to the nearest section level element.
 
@@ -112,7 +118,7 @@ The concept of this content being a tabbed card set is *presentational* and *beh
         </form>
     </nav>
     
-Used for a collection of navigation items. This can include a search form, as this is just another way of navigating to content.
+Used for a collection of navigation items. This can include a search form.
 
 #### Section
 
@@ -156,7 +162,7 @@ Used for news articles, posts etc.
 
 Used for related content.
 
-### Structure
+### Structure separation
 
 **Never use inline CSS or Javascript**. The only exception for this is if properties are set dynamically. For example, a background image set using a CMS, or binding server-side data to an element.
 
