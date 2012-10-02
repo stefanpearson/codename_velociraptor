@@ -10,32 +10,31 @@ This guide aims to unify front-end development techniques and achieve:
 * Portability between projects
 * Better readability
 * Common vocabulary
-* True happiness
 
-Please note this is work in progress.
+Work in progress.
 
 ## Workflows
 
-Start each project by defining 'blocks', patterns and modules of components from visual printouts. Note that just because a component appears to be different, the structure  could remain the same. Presentation could be determined by it's location. For instance, a CTA block should not be written twice; it can be presented differently depending on whether it appears in an aside or a feature grid. Similarly, a subscribe form could have the same behaviour as a search form, but can be presented differently. Read the [BEM methodology](http://coding.smashingmagazine.com/2012/04/16/a-new-front-end-methodology-bem/).
+Start each project by defining 'blocks', patterns and modules of components from visual printouts. Note that just because a component appears to be different, the structure could remain the same. Presentation and behaviour could be determined by a sub-class or modifier. Read the [BEM methodology](http://coding.smashingmagazine.com/2012/04/16/a-new-front-end-methodology-bem/).
 
 Look for potential development hurdles, inconsistencies or UX anti-patterns and iron them out before you start the build to avoid falling over at a later stage.
 
 **Separate structure from presentation from behavior**. Strictly keep structure (markup), presentation (styling), and behavior (scripting) apart, and try to keep the interaction between the three to an absolute minimum.
 
-Components should be portable with the potential of several instances of them working in unison. While hooking on an elements `id` attribute has performance gains, try to avoid unique IDs on elements and **always opt for using `class` instead**.
+Components should be portable with the potential of several instances of them working in unison. While hooking on an elements `id` attribute has performance gains, try to avoid unique IDs on elements and **always opt for using `class` instead**. Modules shouldn't have to know about the system.
 
 Avoid over-specificity, and abstract things where you can.
 
 Always be agnostic and assume nothing. Consider implications of a solution in another situation (i.e. mobile, touch device, browsers without a required feature). **Progressive enhancement is key**.
 
-A good idea is to always think **mobile-first**, that is, not designing for the lowest denominator but starting with the basics and adding functionality and presentation as and when you need it **dependant on the device**. This workflow and mindset will almost give you a mobile version for free.
+A good idea is to always think **mobile-first**, that is, not designing for the lowest denominator but starting with a core experience and adding functionality and presentation as and when you need it **dependant on the device**. This workflow and mindset will give you a range of experiences, 'tailored' to the device, for free.
 
 **Don't compromise current and future browsers to adhere to legacy ones**, it is short-sighted. That said, do provide a solution for them, even if it is a more basic experience.
 
 ### General Formatting
 
+* Indent correctly and ensure there is no unnecessary whitespace.
 * Use 4 spaces for indentation and avoid tabs (configure your IDE to take care of this for you).
-
 
 ## HTML
 
@@ -47,8 +46,8 @@ A good idea is to always think **mobile-first**, that is, not designing for the 
 
 * Use UTF-8
 * Always include a title
-* Provide meta data (only if it's useful, i.e. not keywords)
-* Make use of the canonical meta if the content of a URI is a direct duplicate of another or Google will get grumpy.
+* Provide meta data (only if it's useful, no keywords)
+* Make use of the canonical meta if the content of a URI is a direct duplicate of another, see SEO/crawlability.
 
 
 ### Semantics and accessibility
@@ -99,7 +98,7 @@ This requires styling and scripting to make the elements appear to be linked. To
         </div>
     </div>
     
-The concept of this content being a tabbed card set is *presentational* and *behavioral* and should be treated as an enhancement. Therefore using Javascript, you can manipulate this structure on the client and style it accordingly. A benefit of this is that you may not want a tabbed UI on mobile devices, so no additional work is required.
+The concept of this content being a tabbed card set is *presentational* and *behavioral* and should be treated as an enhancement. Therefore using Javascript, you can manipulate this structure on the client and style it accordingly. A benefit of this is that you may not want a tabbed UI in certain situations, i.e. mobile devices, so no additional fallback work is required.
 
 `section`, `article`, `aside` are section level elements. All elements are semantically relative to the nearest section level element.
 
@@ -164,7 +163,7 @@ Used for related content.
 
 ### Structure separation
 
-**Never use inline CSS or Javascript**. The only exception for this is if properties are set dynamically. For example, a background image set using a CMS, or binding server-side data to an element.
+**Never use inline CSS or Javascript**. The only exception for this is if properties are set dynamically. For example, a background image set using a CMS, or binding server-side data to an element. Avoid invoking any functions at this point as your dependencies may not be ready.
 
     // Anti-pattern
     
@@ -185,16 +184,218 @@ Used for related content.
 
 ## Styles
 
-* LESS
-* Syntax
-* Variables
-* Mixins
-* Prefixes
-* Patterns
-* Modernizr and progressive enhancement
-* Compiling CSS
+### General good practise
 
-### Layout
+**Be generic**.
+
+Separate structure from presentation, and containers from components. Components should **always** be built to be flexible and fluid; let the grid determine it's width, and the content determine it's height.
+
+If visuals contain redundant inconsistencies of very slightly different rules, merge them for consistency. Creating unnecessary style rules or duplicates of code blocks is inefficient and confusing. For instance, a gutter of 18px and a gutter of 21px probably shouldn't be imitated and it would be a good idea to keep the value consistent so that building blocks are **predictable**.
+
+#### Anti-patterns
+
+##### Redundant specificity
+
+IDs should only appear once anyway. There is no need for defining any more specificity than a straight forward ID selector. Saying that, you should try to avoid styling specific elements anyway, as it requires the presentation to know about the system.
+
+    // Anti-pattern
+    
+    ul#something {
+        ...
+    }
+    
+    // Pattern
+
+    #something {
+        ...
+    }
+    
+##### * Selector
+
+Only use `*` as a standalone universal selector. Don't use it as a descendant selector as performance and render speeds can take a hit.
+    
+    // Anti-pattern
+    
+    .blah * {
+        ...
+    }
+    
+    // Pattern
+    
+    .blah .child-a,
+    .blah .child-b {
+        ...
+    }
+    
+    * {
+        ...
+    }
+    
+##### Description of presentation
+
+Do not use class names that describe presentation, as this is subject to change for any number of reasons.
+    
+    // Anti-pattern
+    
+    .colour-green {
+       color: green;
+    }
+    
+    .width-70-percent {
+       width: 70%;
+    }
+    
+    // Pattern
+    
+    .theme-a {
+        color: green;
+    }
+    
+    .content-area {
+        width: 70%;
+    }
+    
+##### !important overrides
+
+`!important` shouldn't be used, respect your cascade. The exception being if there is the need for overriding styles that are set on the client by a third-party.
+    
+    // Anti-Pattern
+    
+    .form .input-wrapper input {
+        background-color: white;
+    }
+    .search input {
+        background-color: hotpink !important;
+    }
+    
+    // Pattern
+
+    .form .input-wrapper input {
+        background-color: white;
+    }
+    .search .input-wrapper input {
+        background-color: hotpink;
+    }
+
+#### Safe selectors
+
+* **IE7+** `>`, `+`, `~`, `:first-child`, `:hover`
+* **IE8+** `:focus`, `:before`, `:after`
+* **IE9+** `:last-child`, `:nth-of-type`
+
+[Support table](http://kimblim.dk/css-tests/selectors/)
+
+### LESS
+
+We are currently using LESS, a CSS preprocessor, to write style rules for it's variables, calculations, imports and mix-in functionality. Read the [LESS documentation](http://lesscss.org) for more info. Please ensure you keep your LESS components up to date or unexpected (or silent) errors can occur during compilation. We do not use the client-side features of LESS, and always compile CSS into a /styles/css/ directory.
+
+Get the [LESS app](http://incident57.com/less/) for OS X or [WinLess](http://winless.org) for Windows. Ubuntu users can learn about GUIs [here](http://en.wikipedia.org/wiki/Gui).
+
+#### Formatting
+
+Write parentheses on same line as selector.
+
+    // Anti-pattern
+    
+    .blah
+    {
+    
+    }
+    
+    // Pattern
+    
+    .blah {
+    
+    }
+    
+Group selectors on multiple lines for quick readability.
+
+    // Anti-pattern
+    
+    .one, .two, .three {
+        ...
+    }
+    
+    // Pattern
+    
+    .one,
+    .two,
+    .three {
+        ...
+    }
+
+Add space between key and value.
+
+    // Anti-pattern
+    
+    .one {
+        key:value;
+    }
+    
+    // Pattern
+    
+    .one {
+        key: value;
+    }
+    
+Lowercase hyphenated properties (underscores for IDs, as they are more likely to be used for scripting).
+
+    // Anti-pattern
+    
+    .productItem {
+        ...
+    }
+    
+    .product_item {
+        ...
+    }
+    
+    #Component-1 {
+        ...
+    }
+    
+    #COMPONENT1 {
+        ...
+    }
+    
+    // Pattern
+    
+    .product-item {
+        ...
+    }
+    
+    #component_1 {
+        ...
+    }
+
+#### Variables
+
+Store your global variables in styles/global.less and import this to all other LESS files to get access to them. A good idea is to set your colour palette and base units here so you can use them consistently everywhere, if they need to change for any reason, it's simply a case of changing them once.
+
+    @v_space: 18px;
+    @h_space: 24px;
+    
+    @color_a: #222222; // Dark grey
+    @color_b: #E11010; // T.C red
+    @color_b_hl: lighten(@color_b, 15%); // T.C red highlight
+
+#### Imports
+
+Imports here
+
+#### Mixins
+
+Mixins here
+
+#### Prefixes
+
+Prefix rules here
+
+#### Progressive enhancement
+
+HTML class hooks
+
+### Layout patterns
 
 * Inline block, block, inline
 * Percentages
@@ -203,7 +404,7 @@ Used for related content.
 * Multicolumns
 * Patterns, anti-patterns (floats, clears)
 
-### Typography
+### Typography patterns
 
 * Base units
 * Relative ems
