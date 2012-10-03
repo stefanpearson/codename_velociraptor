@@ -285,12 +285,6 @@ Do not use class names that describe presentation, as this is subject to change 
 
 [Support table](http://kimblim.dk/css-tests/selectors/)
 
-### LESS
-
-We are currently using LESS, a CSS preprocessor, to write style rules for it's variables, calculations, imports and mix-in functionality. Read the [LESS documentation](http://lesscss.org) for more info. Please ensure you keep your LESS components up to date or unexpected (or silent) errors can occur during compilation. We do not use the client-side features of LESS, and always compile CSS into a /styles/css/ directory.
-
-Get the [LESS app](http://incident57.com/less/) for OS X or [WinLess](http://winless.org) for Windows. Ubuntu users can learn about GUIs [here](http://en.wikipedia.org/wiki/Gui).
-
 #### Formatting
 
 Write parentheses on same line as selector.
@@ -338,7 +332,7 @@ Add space between key and value.
         key: value;
     }
     
-Lowercase hyphenated properties (underscores for IDs, as they are more likely to be used for scripting).
+Lowercase hyphenated properties (underscores for IDs, to adhere to JS code convention).
 
     // Anti-pattern
     
@@ -367,13 +361,19 @@ Lowercase hyphenated properties (underscores for IDs, as they are more likely to
     #component_1 {
         ...
     }
+    
+### LESS
+
+We are currently using LESS, a CSS pre-processor, to write style rules for it's variables, calculations, imports and mix-in functionality. Read the [LESS documentation](http://lesscss.org) for more info. Please ensure you keep your LESS components up to date or unexpected (or silent) errors can occur during compilation. We do not use the client-side features of LESS, and always compile CSS into a /styles/css/ directory.
+
+Get the [LESS app](http://incident57.com/less/) for OS X or [WinLess](http://winless.org) for Windows. Ubuntu users can learn about GUIs [here](http://en.wikipedia.org/wiki/Gui).
 
 #### Variables
 
-Store your global variables in styles/global.less and import this to all other LESS files to get access to them. A good idea is to set your colour palette and base units here so you can use them consistently everywhere, if they need to change for any reason, it's simply a case of changing them once.
+Store your global variables in styles/global.less and import this to all other LESS files to access them. A good idea is to set your colour palette and base units here so you can use them consistently everywhere, if they need to change for any reason, it's simply a case of changing them once.
 
-    @v_space: 18px;
-    @h_space: 24px;
+    @v_gutter: 18px;
+    @h_gutter: 24px;
     
     @color_a: #222222; // Dark grey
     @color_b: #E11010; // T.C red
@@ -381,7 +381,10 @@ Store your global variables in styles/global.less and import this to all other L
 
 #### Imports
 
-Imports here
+Import other LESS files at the top of your file to make your dependencies clear. Importing compiles the file into the current stylesheet, it does not do this by reference so **use it wisely**. Don't import files for the sake of it or you will end up with duplicate code, potentially harming your cascade. The exception for this is the global.less file, which should only ever contain variables and mix-ins that will be ignored in the output CSS.
+
+    @import "global";
+    @import "typography";
 
 #### Mixins
 
