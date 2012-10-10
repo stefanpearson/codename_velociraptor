@@ -17,13 +17,13 @@ Work in progress.
 
 Rather than diving in to recreate visuals, start each project by defining 'blocks', patterns and modules of components from visual printouts. Look for potential development hurdles, inconsistencies or UX anti-patterns and iron them out before you start the build to avoid ambiguity and delays. Always think about how things will work in different situations and the visuals are not always a means to an end, for instance, how should things behave:
 
-    * on mobile
-    * at different screen widths
-    * with larger or smaller amounts of content than the visuals show
-    * at different font-sizes (fluid/relative typography)
-    * with different image aspect ratios
-    * without a certain required browser feature
-    * without a pointer (touch devices)
+* on mobile
+* at different screen widths
+* with larger or smaller amounts of content than the visuals show
+* at different font-sizes (fluid/relative typography)
+* with different image aspect ratios
+* without a certain required browser feature
+* without a pointer (touch devices)
 
 Note that just because a component appears to be different, structure could remain the same. Presentation and behaviour could be determined by a sub-class or modifier. Read the [BEM methodology](http://coding.smashingmagazine.com/2012/04/16/a-new-front-end-methodology-bem/).
 
