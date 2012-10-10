@@ -35,14 +35,24 @@ Avoid over-specificity, and abstract things where you can.
 
 Always be agnostic and assume nothing. Consider implications of a solution in another situation (i.e. mobile, touch device, browsers without a required feature). **Progressive enhancement is key**.
 
-A good idea is to always think **mobile-first**, that is, not designing for the lowest denominator but starting with a core experience and adding functionality and presentation as and when you need it **dependant on the device**. This workflow and mindset will give you a range of experiences, 'tailored' to the device, for free.
-
 **Don't compromise current and future browsers to adhere to legacy ones**, it is short-sighted. That said, do provide a solution for them, even if it is a more basic experience.
 
 ### General Formatting
 
 * Indent correctly and ensure there is no unnecessary whitespace.
 * Use 4 spaces for indentation and avoid tabs (configure your IDE to take care of this for you).
+
+### Progressive enhancement
+
+Responsive design implementation can be messy. Regressively stripping back a desktop-optimised site for mobile devices is less efficient to develop and has a negative impact on the user.
+
+For instance, markup and CSS is purposely built for a complex interactive component that is entirely unusable on mobile devices; this component is now set in stone and the only option we have to serve mobile users is to remove it entirely on the client-side. Choosing to remove it is under the presumption that this content is not important to mobile users, and **they still get the overhead anyway**.
+
+Instead, we can use progressive enhancement.
+
+Progressive enhancement is the concept of adding functionality and decoration from a baseline. Adding these features is entirely dependant on the browsers capability and size. It is important that we don't use user-agent sniffing as it is a short-term solution that doesn't solve the underlying problem. Testing the browser for a feature at runtime on the client is a much more reliable method and ensures the product is future-proof.
+
+This workflow and mindset will give you a range of experiences, 'tailored' to the device, for free.
 
 ## HTML
 
@@ -192,16 +202,6 @@ Used for related content.
     		$('#component').data('component_data', component_data);
     	})(jQuery, this);
     </script>
-    
-### Progressive enhancement
-
-Responsive design implementation can be messy. Regressively stripping back a desktop-optimised site for mobile devices is less efficient to develop and has a negative impact on the user.
-
-For instance, markup and CSS is purposely built for a complex interactive component that is entirely unusable on mobile devices; this component is now set in stone and the only option we have to serve mobile users is to remove it entirely on the client-side. Choosing to remove it is under the presumption that this content is not important to mobile users, and **they still get the overhead anyway**.
-
-Instead, we can use progressive enhancement.
-
-Progressive enhancement is the concept of adding functionality and decoration from a baseline. Adding these features is entirely dependant on the browsers capability and size. It is important that we don't use user-agent sniffing as it is a short-term solution that doesn't solve the underlying problem. Testing the browser for a feature at runtime on the client is a much more reliable method and ensures the product is future-proof.
 
 ## Styles
 
@@ -342,7 +342,7 @@ Keep the order of how you define properties consistent. Define layout properties
 
 #### Formatting
 
-Write parentheses on same line as selector.
+Write curly brackets on the same line as the selector.
 
     // Anti-pattern
     
