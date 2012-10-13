@@ -1,6 +1,8 @@
 # Codename: Velociraptor
 ---
 
+## Abstract
+
 This guide aims to unify front-end development techniques and achieve:
 
 * Quality code
@@ -11,62 +13,69 @@ This guide aims to unify front-end development techniques and achieve:
 * Better readability
 * Common vocabulary
 
+It assumes the use of our in-house framework that utilises a custom extended version of Codeigniter, LESS, and conditional asynchronous asset loading on the client side.
+
 Work in progress.
+
+## TL;DR
+
+TBC
 
 ## Workflows
 
-Rather than diving in to recreate visuals, start each project by defining 'blocks', patterns and modules of components from visual printouts. Look for potential development hurdles, inconsistencies or UX anti-patterns and iron them out before you start the build to avoid ambiguity and delays. Always think about how things will work in different situations and the visuals are not always a means to an end, for instance, how should things behave:
+Rather than diving in to development, start each project by defining 'blocks', patterns and modules of components from visual printouts. Look for potential development hurdles that could be simplified, inconsistencies or UX anti-patterns and iron them out before you start the build to avoid ambiguity and delays. Always think about how things will work in different conditions as visuals are not always the means to an end, for instance, how should things behave:
 
 * on mobile
 * at different screen widths
-* with larger or smaller amounts of content than the visuals show
-* at different font-sizes (fluid/relative typography)
-* with different image aspect ratios
+* with a different amount of content
 * without a certain required browser feature
 * without a pointer (touch devices)
 
 Note that just because a component appears to be different, structure could remain the same. Presentation and behaviour could be determined by a sub-class or modifier. Read the [BEM methodology](http://coding.smashingmagazine.com/2012/04/16/a-new-front-end-methodology-bem/).
 
-**Separate structure from presentation from behavior**. Strictly keep structure (markup), presentation (styling), and behavior (scripting) apart, and try to keep the interaction between the three to an absolute minimum.
+**Separate structure from presentation from behavior**. Strictly keep structure (markup), presentation (styling), and behaviour (scripting) apart, and try to keep the interaction between the three to an absolute minimum.
 
-Components should be portable with the potential of several instances of them working in unison. While hooking on an elements `id` attribute has performance gains, try to avoid unique IDs on elements and **always opt for using `class` instead**. Modules shouldn't have to know about the system and relying on there being one instance of a component is not a good idea.
+Components should be portable with the potential of several instances of them working in unison. While hooking on an elements `id` attribute has performance gains, avoid unique IDs on elements and **always opt for using `class` instead**. Modules shouldn't have to know about the system and assuming there will only be one instance of a component is not a good idea.
 
-Avoid over-specificity, and abstract things where you can.
-
-Always be agnostic and assume nothing. Consider implications of a solution in another situation (i.e. mobile, touch device, browsers without a required feature). **Progressive enhancement is key**.
+Avoid over-specificity, and abstract things where you can. Within reason, approach all code with the mindset of it being portable to other projects.
 
 **Don't compromise current and future browsers to adhere to legacy ones**, it is short-sighted. That said, do provide a solution for them, even if it is a more basic experience.
 
-### General Formatting
-
-* Indent correctly and ensure there is no unnecessary whitespace.
-* Use 4 spaces for indentation and avoid tabs (configure your IDE to take care of this for you).
+Always be agnostic and assume nothing. **Progressive enhancement is key**.
 
 ### Progressive enhancement
 
-Responsive design implementation can be messy. Regressively stripping back a desktop-optimised site for mobile devices is less efficient to develop and has a negative impact on the user.
+Responsive design implementation can be messy. Regressively stripping back a desktop-optimised site for mobile devices is not efficient to develop and has a negative impact on the user.
 
-For instance, markup and CSS is purposely built for a complex interactive component that is entirely unusable on mobile devices; this component is now set in stone and the only option we have to serve mobile users is to remove it entirely on the client-side. Choosing to remove it is under the presumption that this content is not important to mobile users, and **they still get the overhead anyway**.
+For instance, markup and styles that are purposely built for a complex interactive component could be entirely unusable on mobile devices; this component is now set in stone and the only option to serve mobile users is to hide it entirely on the client-side. Choosing to hide it is under the presumption that this content is not important to mobile users, and **they still get the overhead anyway**.
 
 Instead, we can use progressive enhancement.
 
-Progressive enhancement is the concept of adding functionality and decoration from a baseline. Adding these features is entirely dependant on the browsers capability and size. It is important that we don't use user-agent sniffing as it is a short-term solution that doesn't solve the underlying problem. Testing the browser for a feature at runtime on the client is a much more reliable method and ensures the product is future-proof.
+Progressive enhancement is the concept of adding functionality and decoration from a baseline. Adding these features is entirely dependant on the browsers capability and size. It is important that we don't use user-agent sniffing as it is a short-term solution that doesn't solve the underlying problem. Testing the browser for features at runtime on the client is a more reliable method and ensures the product is future-proof.
 
 This workflow and mindset will give you a range of experiences, 'tailored' to the device, for free.
+
+### Code Formatting
+
+Formatting is a preference and there is no right or wrong. However, ensuring we are consistent means code patterns are readable, predictable and interchangeable. In general:
+
+* indent correctly and ensure there is no unnecessary whitespace
+* use 4 spaces for indentation and avoid tabs (configure your IDE to take care of this for you)
+* **be consistent**
 
 ## HTML
 
 * Use HTML5 `<!doctype html>`. Include an HTML5 shiv to polyfill browsers that do not support HTML5 elements natively.
-* Use valid HTML, check using a validator as often as you can.
-* Always close elements. Failing to do this can cause unexpected behaviour in certain browsers.
+* Use valid semantic HTML, check using a validator as often as you can.
+* Always close elements. While HTML5 lets certain things slide, failing to do this can cause unexpected layout bugs in certain browsers.
 
 ### Head
 
 * Use UTF-8
 * Always include a title
 * Provide meta data (only if it's useful, no keywords)
-* Make use of the canonical meta if the content of a URI is a direct duplicate of another, see SEO/crawlability
-* Order of elements should always be meta, styles, scripts.
+* Make use of the canonical meta if the content of a URI is a direct duplicate of another
+* Order of elements should always be meta, styles, scripts
 
 
 ### Semantics and accessibility
@@ -119,7 +128,7 @@ This requires styling and scripting to make the elements appear to be linked. To
         </div>
     </div>
     
-The concept of this content being a tabbed card set is *presentational* and *behavioral* and should be treated as an enhancement. Therefore using Javascript, you can manipulate this structure on the client and style it accordingly. A benefit of this is that you may not want a tabbed UI in certain situations, i.e. mobile devices, so no additional fallback work is required.
+The concept of this content being a tabbed card set is *presentational* and *behavioural* and should be treated as an enhancement. Therefore using Javascript, you can manipulate this structure on the client and style it accordingly. A benefit of this is that you may not want a tabbed UI in certain situations, i.e. mobile devices, so no additional fallback work is required.
 
 `section`, `article`, `aside` are section level elements. All elements are semantically relative to the nearest section level element.
 
@@ -211,7 +220,9 @@ Used for related content.
 
 Separate structure from presentation, and containers from components. Components should **always** be built to be flexible and fluid; let the grid / containers determine it's width, and the content determine it's height.
 
-If visuals contain redundant inconsistencies of very slightly different rules, merge them for consistency. Creating unnecessary style rules or duplicates of code blocks is inefficient and confusing. For instance, a gutter of 18px and a gutter of 21px probably shouldn't be imitated and it would be a good idea to keep the value consistent so that building blocks are **predictable** and portable.
+Think twice before you hard-code absolute numbers.
+
+If visuals contain redundant inconsistencies of very slightly different rules, merge them for consistency. Creating unnecessary style rules or duplicates of code blocks is inefficient and confusing. For instance, a gutter of 18px and a gutter of 21px probably shouldn't be imitated and it would be a good idea to keep the value consistent so that components are **predictable** and portable.
 
 #### Anti-patterns
 
@@ -225,15 +236,37 @@ IDs should only appear once. There is no need for defining any more specificity 
         ...
     }
     
+    .something #something {
+        ...
+    }
+    
     // Pattern
 
     #something {
         ...
     }
     
-##### * Selector
+##### Sweeping (style) statements
 
-Only use `*` as a standalone universal selector. Don't use it as a descendant selector as performance and render speeds can take a hit.
+We should have the freedom to use semantic HTML elements anywhere and in any context. Adding style rules to raw elements is not a good idea, unless applying reset styles to them (to override browser default styles).
+
+    // Anti-pattern
+    
+    header {
+        background-color: red;
+        .margin(bottom, @v_gutter * 2);
+    }
+    
+    // Pattern
+    
+    .masthead {
+        background-color: red;
+        .margin(bottom, @v_gutter * 2);
+    }
+    
+##### Universal * Selector
+
+Only use `*` as a standalone selector. Don't use it as a descendant selector as performance and render speeds take a hit.
     
     // Anti-pattern
     
@@ -300,7 +333,7 @@ Do not use class names that describe presentation, as this is subject to change 
     
 ##### Property definition
 
-Keep the order of how you define properties consistent. Define layout properties first and then decoration.
+Keep the order of how you define properties consistent. Define layout properties first and then decoration. Developers should be able to scan a code block at a glance and understand what it is doing, without having to read the entire block. **Keep all typography properties in a separate typography stylesheet**.
 
     // Anti-Pattern
     
@@ -311,6 +344,7 @@ Keep the order of how you define properties consistent. Define layout properties
         height: 100px;
         position: relative;
         display: block;
+        font-size: 12px;
     }
     
     .block {
@@ -330,6 +364,10 @@ Keep the order of how you define properties consistent. Define layout properties
         height: 100px;
         border-bottom: black solid 1px;
         background-color: red;
+    }
+    
+    .box {
+        font-size: 12px; // Set in typography stylesheet
     }
 
 #### Safe selectors
@@ -479,7 +517,7 @@ Nesting selectors helps keep things modular and readable. Use a line-break befor
 
     .related-area {
     
-        .related-header {
+        .header {
             ...
         }
     
@@ -491,14 +529,14 @@ Nesting selectors helps keep things modular and readable. Use a line-break befor
             ...
         }
         
-        &.theme-a {
+        &.related-area--theme-a {
             ...
         }
     }
     
 Compiles to:
 
-    .related-area .related-header {
+    .related-area .header {
         ...
     }
     
@@ -510,7 +548,7 @@ Compiles to:
         ...
     }
     
-    .related-area.theme-a {
+    .related-area.related-area--theme-a {
         ...
     }
     
@@ -561,7 +599,11 @@ A slideshow requires slides to be contained within a slide-wrapper through absol
     
 #### Style modules
 
-Alternatively, you can choose to keep styles for a certain feature within it's own file and include it with an AMD type approach. An example for this is including hover styles / UI specific to devices with a pointer in a file 'no_touch'. Devices with touch support can instead be served a file 'touch'.
+Alternatively, you can choose to keep styles for a certain feature within it's own file. An example for this is including hover styles / UI specific to devices with a pointer in a file 'no_touch'. Devices with touch support can instead be served a file 'touch'.
+
+### Object orientation
+
+Base class, extend
 
 ### Typography
 
@@ -583,7 +625,7 @@ Font stacks allow browsers to gracefully fall back from left to right if fonts a
         font-style: italic;
     }
     
-If the project requires a non-system font, font-face can be used **providing we have a license**. A font-face mix-in is available in the template.
+If the project requires a non-system font, font-face can be used **providing we have a license**. A font-face mix-in is available in the in-house framework.
 
     @font_path: '../../styles/fonts/'; // defined in global
 
@@ -601,6 +643,8 @@ If the project requires a non-system font, font-face can be used **providing we 
     }
     
     .font-face('DecimaMonoRegular', 'decima_mono_regular/decima_mono-webfont', normal, normal);
+    
+Some projects will require several weights of several typefaces. If we choose to use custom font-faces, this can contribute to the users overhead and speed of loading. **We should be responsible with what font-faces we use and should generally stick to a maximum of 4**. The average font file is around 40kb; when using 2 custom typefaces with 4 weights each, it amounts to 320kb overhead, *just to render text*. The situation is even worse for IE as it requests all of the cross-platform filetypes regardless of which one it needs (a total of 32 font files). Resulting in an overhead of over 1mb. Not cool.
 
 #### Baseline grid
 
@@ -618,39 +662,116 @@ These should be calculated with care and kept consistent throughout to keep the 
 
 A base unit should be derived from your base leading which is known as the 'magic number'. 16 or 18 are a good place to start, as they are easily divisible and readable for body copy leading. Always set a default on the body element so that elements inherit properties by default.
 
-    @size_base: 13px;
-    @leading_base: 18px; // Magic number
+    @size_base: 13;
+    @leading_base: 18; // Magic number
 
     body {
-        font-size: @size_base;
-        line-height: @leading_base;
+        .font-size(@size_base); // 13
+        .leading(@leading_base); // 18
     }
     
-    h1 {
-        font-size: @size_base * 2;
-        line-height: @leading_base * 2;
-        margin-bottom: @leading_base * 2;
+    .some-heading {        
+        .font-size(@size_base * 2); // 26
+        .leading(@leading_base * 2); // 36
+        .margin(bottom, @leading_base * 1.5); // 27
     }
     
-    h2 {
-        font-size: @size_base * 1.5;
-        line-height: @size_base * 1.5;
-        margin-bottom: @leading_base;
+    .some-other-heading {
+        .font-size(@size_base * 1.5); // 19.5
+        .leading(@leading_base * 1.5); // 27
+        .margin(bottom, @leading_base); // 18
     }
     
-    p {
-        margin-bottom: @leading_base;
+    .some-p {
+        .margin(bottom, @leading_base); // 18
     }
 
 [Read about baseline grids in CSS](http://webdesign.tutsplus.com/articles/design-theory/setting-web-type-to-a-baseline-grid/).
 
-#### Hierarchy
+*We can never guarantee a perfect baseline grid, due to arbitrary image sizes throwing it out of sync, however by sticking to these rules we can ensure typography is at the very least neat and consistent.*
 
-TBC
+#### Heading hierarchy
+
+Generally, a project should only contain around 6-8 type sizes and their respective leading. Arbitrary type sizes and leading are generally unmaintainable and unpredictable so look for patterns and boil them down for consistency. Think of them as a colour palette that you can choose from throughout the project.
+
+    // Anti-pattern
+    
+    .some-text {
+        .font-size(13);
+        .leading(18);
+    }
+    
+    .some-other-text {
+        .font-size(14);
+        .leading(17);
+    }
+
+Due to the semantic nature of HTML, making a generalisation of type styles according to their elements is not a good idea. We may want to use `h1`s in several areas for it's semantic properties, but require different visual treatment.
+
+    // Anti-pattern
+    
+    h1 {
+        .font-size(32);
+        .leading(36);
+    }
+    
+    // Pattern
+    
+    .alpha {
+        .font-size(32);
+        .leading(36);
+    }
+    
+An abstract heading hierarchy is beneficial as we can 'tag' type elements with a class from our 'type palette'. Alternatively, and preferably, we can use these abstract classes as mix-ins. We can use letters from the greek alphabet, alpha, beta, gamma, delta, epsilon, zeta, eta, theta, etc.
+
+    @size_alpha: 42;
+    @leading_alpha: 48;
+    @size_beta: 32;
+    @leading_beta: 36;
+    @size_gamma: 24;
+    @leading_gamma: 24;
+    @size_delta: 18;
+    @leading_deta: 21;
+    @size_epsilon: 16;
+    @leading_epsilon: 18;
+    
+    .alpha() {
+        .font-size(@size_alpha);
+        .leading(@size_alpha);
+        text-transform: uppercase;
+        letter-spacing: -1px;
+    }
+    
+    .beta() {
+        .font-size(@size_beta);
+        .leading(@size_beta);
+    }
+    
+    etc...
+    
+    .standard-header {
+        .margin(bottom, @v_gutter * 1.5);
+        
+        h1 {
+            .alpha;
+        }
+        
+        h2 {
+            .beta;
+        }
+    }
+    
+*Note the consistent multiples of our base 'magic number' on leading values for vertical rhythm.*
+
+Now we have an easy to use, consistent, predictable, aesthetically pleasing type hierarchy. Smileyface.
 
 #### Relative units
 
-TBC
+    .font-size(@font_size) {
+        @rem: (@font_size / 10);
+        font-size: @font_size * 1px;
+        font-size: ~"@{rem}rem";
+    }
 
 #### Specimens
 
@@ -670,7 +791,7 @@ Similarly, it should be left to the content to determine the height, rather than
 
 #### Baseline grid
 
-To maintain the baseline grid determined by your typography, use consistent vertical spacing.
+To maintain the baseline grid (determined by your typography), use consistent vertical gutters.
 
     @v_gutter: 18px; // defined in global
 
@@ -721,7 +842,7 @@ The major flaw in this layout technique is **there is no support in IE7**. A pot
         }
     }
     
-Alternatively as a more robust solution, you can apply the padding to an inner element. However, this does contribute to un-semantic markup bloat.
+Alternatively as a more robust solution, you can apply the padding to an inner element. As a rule of thumb if you choose not to make use of `box-sizing: border-box`, don't set widths *and* padding on the same element. *Never mix widths and margins, regardless*.
 
     // HTML
     
