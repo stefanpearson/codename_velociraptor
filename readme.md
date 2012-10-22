@@ -13,7 +13,7 @@ This guide aims to unify front-end development techniques and achieve:
 * Better readability
 * Common vocabulary
 
-It assumes the use of our in-house framework that utilises a custom extended version of Codeigniter, LESS, and conditional asynchronous asset loading on the client side.
+It assumes the use of our in-house framework that utilises a custom extended version of Codeigniter, a series of structured LESS files, and conditional asynchronous asset loading on the client side.
 
 Work in progress.
 
@@ -23,23 +23,26 @@ TBC
 
 ## Workflows
 
-Rather than diving in to development, start each project by defining 'blocks', patterns and modules of components from visual printouts. Look for potential development hurdles that could be simplified, inconsistencies or UX anti-patterns and iron them out before you start the build to avoid ambiguity and delays. Always think about how things will work in different conditions as visuals are not always the means to an end, for instance, how should things behave:
+A good way to begin a project is to start defining 'blocks', patterns and modules of components from visual printouts. Look for potential development hurdles that could be simplified, inconsistencies or UX anti-patterns and iron them out before you start the build to avoid ambiguity and delays. Always think about how things will work in different conditions as visuals are not always the means to an end, for instance, how should things behave:
 
 * on mobile
 * at different screen widths
+* at different screen heights
 * with a different amount of content
 * without a certain required browser feature
 * without a pointer (touch devices)
 
 Note that just because a component appears to be different, structure could remain the same. Presentation and behaviour could be determined by a sub-class or modifier. Read the [BEM methodology](http://coding.smashingmagazine.com/2012/04/16/a-new-front-end-methodology-bem/).
 
+Another thing to bare in mind is being responsible with performance, server-load and overheads. For instance, overly large assets, hundreds of HTTP requests and parallax scrolling effects will most likely result in poor UX.
+
 **Separate structure from presentation from behavior**. Strictly keep structure (markup), presentation (styling), and behaviour (scripting) apart, and try to keep the interaction between the three to an absolute minimum.
 
 Components should be portable with the potential of several instances of them working in unison. While hooking on an elements `id` attribute has performance gains, avoid unique IDs on elements and **always opt for using `class` instead**. Modules shouldn't have to know about the system and assuming there will only be one instance of a component is not a good idea.
 
-Avoid over-specificity, and abstract things where you can. Within reason, approach all code with the mindset of it being portable to other projects.
+Avoid over-specificity, be [DRY](http://en.wikipedia.org/wiki/DRY_code), and abstract things where you can. Within reason, approach all code with the mindset of it being portable to other projects.
 
-**Don't compromise current and future browsers to adhere to legacy ones**, it is short-sighted. That said, do provide a solution for them, even if it is a more basic experience.
+**Don't compromise current and future browsers to adhere to legacy ones**, it is short-sighted. That said, do provide a solution for them, even if it is a more basic experience or aesthetic.
 
 Always be agnostic and assume nothing. **Progressive enhancement is key**.
 
@@ -51,17 +54,17 @@ For instance, markup and styles that are purposely built for a complex interacti
 
 Instead, we can use progressive enhancement.
 
-Progressive enhancement is the concept of adding functionality and decoration from a baseline. Adding these features is entirely dependant on the browsers capability and size. It is important that we don't use user-agent sniffing as it is a short-term solution that doesn't solve the underlying problem. Testing the browser for features at runtime on the client is a more reliable method and ensures the product is future-proof.
+Progressive enhancement is the concept of adding functionality and aesthetics from a baseline. Adding these features is entirely dependant on the browsers capability and size. It is important that we don't use user-agent sniffing as it is a short-term solution that doesn't solve the underlying problem. Testing the browser for features at runtime on the client is a more reliable method and ensures the product is future-proof.
 
-This workflow and mindset will give you a range of experiences, 'tailored' to the device, for free.
+This workflow and mindset will give you a range of legacy and future-proof experiences, 'tailored' to the device.
 
 ### Code Formatting
 
 Formatting is a preference and there is no right or wrong. However, ensuring we are consistent means code patterns are readable, predictable and interchangeable. In general:
 
 * indent correctly and ensure there is no unnecessary whitespace
-* use 4 spaces for indentation and avoid tabs (configure your IDE to take care of this for you)
-* **be consistent**
+* use 4 spaces for indentation, **not tabs** (configure your IDE to take care of this for you)
+* **be consistent**, whether it's with your own code, or someone else's.
 
 ## HTML
 
@@ -220,9 +223,9 @@ Used for related content.
 
 Separate structure from presentation, and containers from components. Components should **always** be built to be flexible and fluid; let the grid / containers determine it's width, and the content determine it's height.
 
-Think twice before you hard-code absolute numbers.
+Think twice before you hard-code absolute numbers. It will almost always come back to bite you!
 
-If visuals contain redundant inconsistencies of very slightly different rules, merge them for consistency. Creating unnecessary style rules or duplicates of code blocks is inefficient and confusing. For instance, a gutter of 18px and a gutter of 21px probably shouldn't be imitated and it would be a good idea to keep the value consistent so that components are **predictable** and portable.
+If visuals contain redundant inconsistencies of very slightly different rules, make them consistent. Creating unnecessary style rules or duplicates of code blocks is inefficient and confusing. For instance, a gutter of 18px and a gutter of 21px probably shouldn't be imitated and it would be a good idea to keep the value consistent so that components are **predictable** and portable.
 
 #### Anti-patterns
 
@@ -609,6 +612,50 @@ Base class, extend
 
 Typography is a good place to start within a project, by initially defining type styles, things fall into place throughout.
 
+#### Relative units
+
+Setting `font-size` and `line-height` using pixel units can lock us down and potentially create more work for us. If we need to adjust the average type size, for accessibility reasons or to adjust dependant on screen resolution or device, duplicate code and overrides can become out of hand and unwieldy.
+
+To solve this problem, we can opt to use relative units (`rem`). Relative units are multiplications of the root-level element font-size. Changing the root `font-size` value will automatically affect properties with `rem` units globally. This does not only apply to type styles, we can use it in any property as a pixel substitute. For instance, margins, padding, widths etc. *rem units do not work in IE < 9, so a pixel fallback needs to be supplied, we can do this easily with a LESS mix-in*.
+
+    // Mixins
+
+    .font-size(@font_size) {
+        @rem: (@font_size / 10);
+        font-size: @font_size * 1px;
+        font-size: ~"@{rem}rem";
+    }
+    
+    .leading(@leading: @leading_base) {
+        @rem: (@leading / 10);
+        line-height: @leading * 1px;
+        line-height: ~"@{rem}rem";
+    }
+    
+    // Styles
+    
+    html {
+        font-size: 62.5%; // Equivalent to 10px (browser-default is 16)
+    }
+    
+    .element {
+        .font-size(13);
+        .leading(18);
+    }
+    
+    // CSS Output
+    
+    html {
+        font-size: 62.5%;
+    }
+    
+    .element {
+        font-size: 13px;
+        font-size: 1.3rem;
+        line-height: 18px;
+        line-height: 1.8rem;
+    }
+
 #### Typefaces
 
 Font stacks allow browsers to gracefully fall back from left to right if fonts are not available. Ensure everyone is covered by including a default system font last. [CSS font-stack](http://cssfontstack.com) is a good resource for providing information on cross-platform font availability and appropriate fallback fonts.
@@ -644,7 +691,7 @@ If the project requires a non-system font, font-face can be used **providing we 
     
     .font-face('DecimaMonoRegular', 'decima_mono_regular/decima_mono-webfont', normal, normal);
     
-Some projects will require several weights of several typefaces. If we choose to use custom font-faces, this can contribute to the users overhead and speed of loading. **We should be responsible with what font-faces we use and should generally stick to a maximum of 4**. The average font file is around 40kb; when using 2 custom typefaces with 4 weights each, it amounts to 320kb overhead, *just to render text*. The situation is even worse for IE as it requests all of the cross-platform filetypes regardless of which one it needs (a total of 32 font files). Resulting in an overhead of over 1mb. Not cool.
+Some projects will require several weights of several typefaces. If we choose to use font-faces, this can contribute to the users overhead and speed of loading. **We should be responsible with what font-faces we use and should generally stick to a maximum of 4**. The average font file is around 40kb; when using 2 custom typefaces with 4 weights each, it amounts to 320kb overhead, *just to render text*. The situation is even worse for IE as it requests all of the cross-platform filetypes regardless of which one it needs (a total of 32 font files). Resulting in an overhead of over 1mb. Not cool.
 
 #### Baseline grid
 
@@ -667,32 +714,32 @@ A base unit should be derived from your base leading which is known as the 'magi
 
     body {
         .font-size(@size_base); // 13
-        .leading(@leading_base); // 18
+        .leading(@leading_base); // 18 (magic number)
     }
     
     .some-heading {        
         .font-size(@size_base * 2); // 26
-        .leading(@leading_base * 2); // 36
-        .margin(bottom, @leading_base * 1.5); // 27
+        .leading(@leading_base * 2); // 36 (magic number * 2)
+        .margin(bottom, @leading_base * 1.5); // 27 (magic number * 1.5)
     }
     
     .some-other-heading {
         .font-size(@size_base * 1.5); // 19.5
-        .leading(@leading_base * 1.5); // 27
-        .margin(bottom, @leading_base); // 18
+        .leading(@leading_base * 1.5); // 27 (magic number * 1.5)
+        .margin(bottom, @leading_base); // 18 (magic number)
     }
     
     .some-p {
-        .margin(bottom, @leading_base); // 18
+        .margin(bottom, @leading_base); // 18 (magic number)
     }
 
 [Read about baseline grids in CSS](http://webdesign.tutsplus.com/articles/design-theory/setting-web-type-to-a-baseline-grid/).
 
 *We can never guarantee a perfect baseline grid, due to arbitrary image sizes throwing it out of sync, however by sticking to these rules we can ensure typography is at the very least neat and consistent.*
 
-#### Heading hierarchy
+#### Heading hierarchy & type palettes
 
-Generally, a project should only contain around 6-8 type sizes and their respective leading. Arbitrary type sizes and leading are generally unmaintainable and unpredictable so look for patterns and boil them down for consistency. Think of them as a colour palette that you can choose from throughout the project.
+Generally, a project should only contain around 6-8 type sizes and their respective leading. Arbitrary type sizes and leading are generally unmaintainable and unpredictable so look for patterns and boil them down for consistency. Think of them as a colour palette to choose from throughout the project.
 
     // Anti-pattern
     
@@ -722,16 +769,20 @@ Due to the semantic nature of HTML, making a generalisation of type styles accor
         .leading(36);
     }
     
-An abstract heading hierarchy is beneficial as we can 'tag' type elements with a class from our 'type palette'. Alternatively, and preferably, we can use these abstract classes as mix-ins. We can use letters from the greek alphabet, alpha, beta, gamma, delta, epsilon, zeta, eta, theta, etc.
+An abstract heading hierarchy is beneficial as we can 'tag' type elements with a class from our 'type palette'. Alternatively, and preferably, we can use these abstract classes as mix-ins. [Learn the Greek alphabet](http://en.wikipedia.org/wiki/Greek_alphabet).
 
     @size_alpha: 42;
     @leading_alpha: 48;
+    
     @size_beta: 32;
     @leading_beta: 36;
+    
     @size_gamma: 24;
     @leading_gamma: 24;
+    
     @size_delta: 18;
     @leading_deta: 21;
+    
     @size_epsilon: 16;
     @leading_epsilon: 18;
     
@@ -763,19 +814,7 @@ An abstract heading hierarchy is beneficial as we can 'tag' type elements with a
     
 *Note the consistent multiples of our base 'magic number' on leading values for vertical rhythm.*
 
-Now we have an easy to use, consistent, predictable, aesthetically pleasing type hierarchy. Smileyface.
-
-#### Relative units
-
-    .font-size(@font_size) {
-        @rem: (@font_size / 10);
-        font-size: @font_size * 1px;
-        font-size: ~"@{rem}rem";
-    }
-
-#### Specimens
-
-TBC
+Now we have a consistent, predictable, aesthetically pleasing type hierarchy. Smileyface.
 
 ### Layout
 
@@ -785,9 +824,9 @@ TBC
 
 #### Fluid containers
 
-Responsive layout requires elements to be constantly in flux dependant on browser width. Because of this, it is imperative that we make all container elements (or columns) fluid and **avoid fixed widths**, opt for percentage values instead. The inner components should be allowed to flow and fill their containers. Set as little widths as possible, and let the grid do the work.
+Responsive layout requires elements to be in constant flux dependant on browser width (or height). Because of this, it is imperative that we make all container elements (or columns) fluid and **avoid fixed widths**, opt for percentage values instead. The inner components should be allowed to flow and fill their containers. Set as little widths as possible, and let the grid do the work.
 
-Similarly, it should be left to the content to determine the height, rather than setting an explicit value. If fixed heights are unavoidable, ensure content is being properly truncated or cropped without visibly flowing outside it's container.
+Similarly, it should be left to the content to determine the height, rather than setting an explicit value. If fixed heights are unavoidable, ensure content is being properly truncated (set a max-height in 'em's, ensuring it is always relevant to text's `line-height`) or cropped, without visibly flowing outside it's container.
 
 #### Baseline grid
 
@@ -812,14 +851,18 @@ A block-level element's total width is determined by its width + padding + borde
 
 If an elements `box-sizing` property is changed to `border-box`, as opposed to the default `content-box`, padding and border widths are included **within the elements width**. Therefore we can set a fluid width with a fixed padding value, making it an ideal solution for fluid grid-based layout.
 
+If our intention is to create a 4 column grid, the following would not work as the elements total width would exceed 25%.
+
     .grid-item {
         .inline-block;
         width: 25%;
         padding-right: @h_gutter / 2;
         padding-left: @h_gutter / 2;
+        border-left-width: 1px;
+        border-right-width: 1px;
     }
     
-If our intention is to create a 4 column grid, this would not work as the elements total width would exceed 25%.
+Instead, by changing the elements `box-sizing` to `border-box`, the padding and border properties are included in the width.
 
     .grid-item {
         .inline-block;
@@ -827,11 +870,11 @@ If our intention is to create a 4 column grid, this would not work as the elemen
         width: 25%;
         padding-right: @h_gutter / 2;
         padding-left: @h_gutter / 2;
+        border-left-width: 1px;
+        border-right-width: 1px;
     }
-    
-By changing the elements `box-sizing` to `border-box`, the padding and properties are included in the width.
 
-The major flaw in this layout technique is **there is no support in IE7**. A potential workaround is to reduce the width percentage and make up the difference using percentage padding values (for IE7 only).
+The major flaw in this layout technique is **there is no support in IE < 8**. A potential workaround is to reduce the width percentage and make up the difference using percentage padding values (for IE < 8 only).
 
     .ie-lt8 {
         
@@ -871,7 +914,7 @@ If we require a major change where the layout appears to break, media queries ca
     @media only screen and (max-width: 800px) {
     
         .grid-item {
-            width: 20%;
+            width: 20%; // Results in 5 columns
         }
         
     }
@@ -879,18 +922,69 @@ If we require a major change where the layout appears to break, media queries ca
     @media only screen and (max-width: 799px) {
         
         .grid-item {
-            width: 25%;
+            width: 25%; // Results in 4 columns
         }
         
     }
+    
+Our in-house framework includes a core set of LESS files with media queries that load dependant on the device. Additional media queries can be included within these files for refining the layout further.
 
-#### Float vs inline-block vs multi-columns
+#### Layout methods: float vs inline-block
 
-TBC
+Unfortunately, there is no stable, cross-browser method of layout in CSS and each method has it's flaws. A large issue is that visual hierarchy is dictated by structure of markup. If an element is before another in the structure, it will render before the other (unless manipulated through absolute positioning). This makes it hard to remain with a logical structure and adapt visual hierarchy with finesse. The proposed CSS3 flex-box model will solve a lot of issues but until the proposal is more widely picked up by vendors, it is not yet a viable solution *(unless you're only targeting webkit devices)*.
 
-#### Anti-patterns
+This leaves us with an unholy blend of floating and inline-block elements.
 
-TBC
+A common task is columnising elements to appear side-by-side. A widespread technique for approaching this is to use the `float` property. However, using this technique is considered a hack as the purpose of `float` is to allow surrounding elements to wrap around an element. Using it for columnising causes the parent to collapse, as it is expecting other elements to flow around its floating elements. The 'fix' is to encapsulate all of the floating elements in a container, then clear any floats before the end of the container element in order to maintain the layout. To achieve this, additional logic and tight coupling must occur in order to clear-fix the parent.
+
+A `clearfix` class is available in the in-house framework, and should be applied to the parent. **Never create `clear` elements after a set of floating elements. It requires additional logic and bloats the DOM**.
+
+    // Pattern
+    
+    <div class="product-item-list clearfix">
+    
+        <div class="product-item">
+            ...
+        </div>
+        <div class="product-item">
+            ...
+        </div>
+    
+    </div>
+    
+    // Anti-pattern
+    
+    <div class="product-item-list">
+    
+        <div class="product-item">
+            ...
+        </div>
+        <div class="product-item">
+            ...
+        </div>
+        <div class="clear"></div>
+    
+    </div>
+
+**A preferable method is to use `inline-block`**. Setting an elements `display` property to `inline-block` can achieve the same results as the `float` hack, with the added benefit of vertical alignment. The drawback is that no white-space can be present between elements as the additional white space breaks the layout. A fix is to collapse the space with empty PHP tags, thus maintaining the code formatting in your IDE.
+
+    // LESS
+
+    .product-item {
+        .inline-block; (mix-in sets some other properties to fix IE7)
+        width: 50%;
+    }
+    
+    // HTML
+    
+    <section class="product-item">
+        ...
+    </section><?
+    ?><section class="product-item">
+        ...
+    </section>
+    
+Sometimes, the float hack *can* be useful when dealing with visual heirarchy. For instance, if on a large display the secondary navigation needs to appear to the right of the main content, you can float it to the right so that the navigation can be before the content in the structure. This means it can display before the main content on anything other than a large display.
 
 ## Javascript (TBC)
 
@@ -900,7 +994,7 @@ TBC
 * Inheritance
 * jQuery
 
-## Optimisation
+## Optimisation (TBC)
 
 * Sprite sheets
 * Minimalising requests
