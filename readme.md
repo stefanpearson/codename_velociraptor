@@ -28,7 +28,7 @@ A good way to begin a project is to start defining 'blocks', patterns and module
 * on mobile
 * at different screen widths
 * at different screen heights
-* with a different amount of content
+* with a variable amount of content
 * without a certain required browser feature
 * without a pointer (touch devices)
 
@@ -120,7 +120,7 @@ This requires styling and scripting to make the elements appear to be linked. To
             <div class="content">
                 <p>Card 1</p>
             </div>
-        </div>
+        </section>
         <section class="card">
             <header class="tab">
                 <h1>Item 2 heading</h1>
@@ -128,7 +128,7 @@ This requires styling and scripting to make the elements appear to be linked. To
             <div class="content">
                 <p>Card 2</p>
             </div>
-        </div>
+        </section>
     </div>
     
 The concept of this content being a tabbed card set is *presentational* and *behavioural* and should be treated as an enhancement. Therefore using Javascript, you can manipulate this structure on the client and style it accordingly. A benefit of this is that you may not want a tabbed UI in certain situations, i.e. mobile devices, so no additional fallback work is required.
